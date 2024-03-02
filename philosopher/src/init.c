@@ -6,7 +6,7 @@
 /*   By: aalshafy <aalshafy@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:08:31 by aalshafy          #+#    #+#             */
-/*   Updated: 2024/03/01 17:39:14 by aalshafy         ###   ########.fr       */
+/*   Updated: 2024/03/02 17:37:32 by aalshafy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int init_philosophers(t_data *data)
 {
 	t_philosopher *philosophers;
 	int i;
+	int *ret;
 
 	philosophers = malloc(sizeof(t_philosopher) * data->philo_nbr);
 	if (!philosophers)
@@ -57,19 +58,20 @@ int init_philosophers(t_data *data)
 			return (3);
 		if (pthread_create(&philosophers[i].th, NULL, philosopher, &philosophers[i]))
 			return (3);
-		if (pthread_create(&philosophers[i].check_die, NULL, check_die, &philosophers[i]))
-			return (3);
-		// usleep(500);
 	}
 	i = 0;
 	while (++i <= data->philo_nbr)
 	{
-		if (pthread_join(philosophers[i].th, NULL))
+		printf("i = %d\n", i);
+		if (pthread_join(philosophers[i].th, (void **) &ret))
 			return (4);
-		if (pthread_join(philosophers[i].check_die, NULL))
+		printf("ret = %d\n", *ret);
+		if (*ret == 1)
+		{
+			printf("philosopher %d died\n", i);
+			free(ret);
 			return (5);
-		// usleep(800);
-		i++;
+		}
 	}
 	i = 0;
 	while (++i <= data->philo_nbr)

@@ -6,7 +6,7 @@
 /*   By: aalshafy <aalshafy@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/27 13:29:07 by aalshafy          #+#    #+#             */
-/*   Updated: 2024/02/28 09:40:04 by aalshafy         ###   ########.fr       */
+/*   Updated: 2024/03/02 17:25:46 by aalshafy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,16 @@ int main(int argc, char **argv)
     i = init_philosophers(&data);
     if (i != 0)
     {
-        printf("Error: %d\n", i);
+        if (i == 1)
+            printf("Error: pthread_mutex_init\n");
+        else if (i == 2)
+            printf("Error: pthread_mutex_init\n");
+        else if (i == 3)
+            printf("Error: pthread_mutex_init\n");
+        else if (i == 4)
+            printf("Error: pthread_create\n");
+        else if (i == 5)
+            return (0);
         return (1);
     }
 }
