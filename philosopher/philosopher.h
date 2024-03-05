@@ -22,6 +22,7 @@ typedef struct s_philosopher
     int*                next_fork;
     int                 eat_count;
     u_int64_t           last_meal;
+    u_int64_t           start_time;
     t_data              *data;
     pthread_t           th;
     pthread_t           check_die;
@@ -42,3 +43,5 @@ void  philo_state(t_philosopher *philo, char *state);
 void  is_eating(t_philosopher *philo);
 void  *check_die(void *arg);
 int  init_threads(t_philosopher *philosophers, t_data *data);
+int ft_usleep(u_int64_t time);
+u_int16_t time_stamp(u_int16_t start_time);

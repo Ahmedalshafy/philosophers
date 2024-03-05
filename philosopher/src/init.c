@@ -6,7 +6,7 @@
 /*   By: aalshafy <aalshafy@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:08:31 by aalshafy          #+#    #+#             */
-/*   Updated: 2024/03/02 17:37:32 by aalshafy         ###   ########.fr       */
+/*   Updated: 2024/03/05 08:07:25 by aalshafy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int init_philosophers(t_data *data)
 		philosophers[i].id = i;
 		philosophers[i].fork = 1;
 		philosophers[i].eat_count = 0;
+		philosophers[i].start_time = get_time();
 		philosophers[i].last_meal = get_time();
 		philosophers[i].data = data;
 		if (i == data->philo_nbr)
@@ -62,10 +63,8 @@ int init_philosophers(t_data *data)
 	i = 0;
 	while (++i <= data->philo_nbr)
 	{
-		printf("i = %d\n", i);
 		if (pthread_join(philosophers[i].th, (void **) &ret))
 			return (4);
-		printf("ret = %d\n", *ret);
 		if (*ret == 1)
 		{
 			printf("philosopher %d died\n", i);
