@@ -6,7 +6,7 @@
 /*   By: aalshafy <aalshafy@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 08:37:29 by aalshafy          #+#    #+#             */
-/*   Updated: 2024/03/06 11:56:28 by aalshafy         ###   ########.fr       */
+/*   Updated: 2024/03/06 12:22:06 by aalshafy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ void *philosopher(void *arg)
 
 void philo_state(t_philosopher *philo, char *state)
 {
-    pthread_mutex_lock(philo->data->print);
+    pthread_mutex_lock(&philo->data->print);
     printf("time stamp: %hu, philosopher %d is %s\n", time_stamp(philo->start_time), philo->id, state);
-    pthread_mutex_unlock(philo->data->print);
+    pthread_mutex_unlock(&philo->data->print);
 }
 
 void is_eating(t_philosopher *philo)
@@ -70,6 +70,7 @@ void is_eating(t_philosopher *philo)
     // printf("time stamp: %llu, philosopher %d is trying to take a fork\n philo->fork = %d, *philo->next_fork = %d\n", get_time(), philo->id, philo->fork, *philo->next_fork);
     // this isnt excuting
     pthread_mutex_lock(&philo->fork_lock);
+    printf("time stamp: %hu, philosopher %d is trying to take a fork\n philo->fork = %d, *philo->next_fork = %d\n", time_stamp(philo->start_time), philo->id, philo->fork, *philo->next_fork);
     pthread_mutex_lock(philo->next_fork_lock);
     if (philo->fork == 1 && (*philo->next_fork) == 1)
     {        

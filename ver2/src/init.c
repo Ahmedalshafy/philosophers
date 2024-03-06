@@ -6,13 +6,13 @@
 /*   By: aalshafy <aalshafy@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:08:31 by aalshafy          #+#    #+#             */
-/*   Updated: 2024/03/06 12:08:53 by aalshafy         ###   ########.fr       */
+/*   Updated: 2024/03/06 12:18:46 by aalshafy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../philosopher.h"
 
-int init_data(t_data *data, char **argv)
+int init_data(t_data *data, char **argv) // takes pointer to struct so it can modify it
 {
 	data->philo_nbr = ft_atoi(argv[1]);
 	data->time_to_die = ft_atoi(argv[2]);
@@ -23,7 +23,7 @@ int init_data(t_data *data, char **argv)
 	|| data->time_to_eat < 1 || data->time_to_sleep < 1 || data->meal_nbr < 1)
 		return (0);
 	printf("philo_nbr: %d\n", data->philo_nbr);
-	if (pthread_mutex_init(&data->print, NULL))
+	if (pthread_mutex_init(&data->print, NULL)) // init mutex for print
 		return (0);
 	return (1);
 }

@@ -8,14 +8,14 @@
 
 typedef struct s_data
 {
-    int				philo_nbr;
+    int				        philo_nbr;
     u_int64_t				time_to_die;
     u_int64_t				time_to_eat;
     u_int64_t				time_to_sleep;
-    pthread_mutex_t        print;
-    pthread_t           *check_die;
-    int				meal_nbr;
-}					t_data;
+    pthread_mutex_t         print;
+    pthread_t               *check_die;
+    int				        meal_nbr;
+}					        t_data;
 
 typedef struct s_philosopher
 {
