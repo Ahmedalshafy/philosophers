@@ -1,6 +1,6 @@
 NAME = philosophers
 SRC_DIR = src
-SRC = $(addprefix $(SRC_DIR)/, main.c utils.c prog.c init.c)
+SRC = $(addprefix $(SRC_DIR)/, main.c utils.c prog.c init.c checks.c)
 OBJ = $(SRC:.c=.o)
 CFLAGS = -Wall -Wextra -Werror -pthread
 CC = gcc

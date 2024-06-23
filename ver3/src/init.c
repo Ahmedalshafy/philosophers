@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalshafy <aalshafy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aalshafy <aalshafy@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:08:31 by aalshafy          #+#    #+#             */
-/*   Updated: 2024/03/08 08:24:47 by aalshafy         ###   ########.fr       */
+/*   Updated: 2024/03/08 18:18:20 by aalshafy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,27 +24,28 @@ int init_data(t_data *data, char **argv) // takes pointer to struct so it can mo
 		return (0);
 	if (pthread_mutex_init(&data->print, NULL)) // init mutex for print
 		return (0);
-	data->philosophers = malloc(sizeof(t_philosopher) * data->philo_nbr);
-	if (!data->philosophers)
-		return (0);
-	if (init_philosophers(data) != 0)
-		return (free(data->philosophers), 0);
 	pthread_mutex_destroy(&data->print);
-	return (free(data->philosophers), 1);
+	return (1);
 }
 
 int init_philosophers(t_data *data)
 {
 	t_philosopher *philosophers;
-	int i;
-	int *ret;
 
-	philosophers = data->philosophers;
+	printf("philo_nbr: %d\n", data->philo_nbr);
+	philosophers = malloc(sizeof(t_philosopher) * data->philo_nbr);
+	if (!philosophers)
+		return (0);
+	printf("%s\n", "test1");
 	if (init_philosophers_mutexes(philosophers, data))
 		return (2);
+	
 	init_philosophers_data(philosophers, data);
-	if (create_philosopher_thread(philosophers, data))
-		return (4);
+	printf("%s\n", "test2");
+	printf("philosophers[0].id: %d\n", philosophers[0].id);
+	int i = create_philosopher_thread(philosophers, data);
+	if (i != 0)
+		return (i);
 	destroy_philosophers_mutexes(philosophers, data);
 	return (0);
 }
@@ -76,6 +77,13 @@ void init_philosophers_data(t_philosopher *philosophers, t_data *data)
 		philosophers[i].eat_count = 0;
 		philosophers[i].start_time = get_time();
 		philosophers[i].last_meal = get_time();
+		philosophers[i].data = data;
+		printf("philosophers[i].id: %d\n", philosophers[i].id);
+		printf("philosophers[i].data->philo_nbr: %d\n", philosophers[i].data->philo_nbr);
+		printf("philosophers[i].data->time_to_die: %llu\n", philosophers[i].data->time_to_die);
+		printf("philosophers[i].data->time_to_eat: %llu\n", philosophers[i].data->time_to_eat);
+		printf("philosophers[i].data->time_to_sleep: %llu\n", philosophers[i].data->time_to_sleep);
+		printf("philosophers[i].data->meal_nbr: %d\n", philosophers[i].data->meal_nbr);
 		if (i == data->philo_nbr)
 			philosophers[i].next_fork = &philosophers[1].fork;
 		else
@@ -94,25 +102,26 @@ int create_philosopher_thread(t_philosopher *philosophers, t_data *data)
 	int *ret;
 
 	i = 0;
+	
+	if (pthread_create(&data->checks, NULL, checks, philosophers))
+		return (10);
 	while (++i <= data->philo_nbr)
 	{
-		if (pthread_create(&philosophers[i].th, NULL, philosopher, &data))
-			return (4);
+		if (pthread_create(&philosophers[i].th, NULL, philo_rotine, &philosophers[i]))
+			return (100);
 	}
+	pthread_join(data->checks, (void **) &ret);
+	if (*ret == 1)
+		return (50);
 	i = 0;
 	while (++i <= data->philo_nbr)
 	{
-		if (pthread_join(philosophers[i].th, (void **) &ret))
-			return (4);
-		if (*ret == 1)
-		{
-			printf("philosopher %d died\n", i);
-			free(ret);
-			return (5);
-		}
+		if (pthread_join(philosophers[i].th, NULL))
+			return (60);
 	}
 	return (0);
 }
+
 
 // destroy philosphers mutexes
 void destroy_philosophers_mutexes(t_philosopher *philosophers, t_data *data)
