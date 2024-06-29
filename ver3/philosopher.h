@@ -6,50 +6,58 @@
 #include <stdint.h>
 #include <sys/time.h>
 
+# define MAX_PHILOS 200
+
+typedef struct s_philosophers
+{
+	int				    id;
+	int				    philo_nbr;
+	int                *left_fork;
+	int                *right_fork;
+	int                *dead;
+	int					is_eating;
+	int                 meal_count;
+	size_t				time_to_die;
+	size_t				time_to_eat;
+	size_t				time_to_sleep;
+	size_t              last_meal;
+	size_t              start_time;
+	pthread_t           th;
+	pthread_mutex_t     *left_fork_lock;
+	pthread_mutex_t     *right_fork_lock;
+	pthread_mutex_t     *print;
+	pthread_mutex_t	 	*dead_status;
+	pthread_mutex_t     *meal_count_lock;
+}					t_philosophers;
+
 typedef struct s_data
 {
-    int				        philo_nbr;
-    int				        meal_nbr;
-    int                     is_dead;
-    u_int64_t				time_to_die;
-    u_int64_t				time_to_eat;
-    u_int64_t				time_to_sleep;
-    pthread_mutex_t         print;
-    pthread_t               checks;
+	int				        philo_nbr;
+	int				        meal_nbr;
+	int                     is_dead;
+	t_philosophers		   *philos;
+	pthread_mutex_t         print;
+	pthread_mutex_t         dead_status;
+	pthread_mutex_t         meal_count_lock;
+	pthread_t               checks;
 }					        t_data;
 
-typedef struct s_philosopher
-{
-    int				    id;
-    int                 fork;
-    int*                next_fork;
-    int                 eat_count;
-    u_int64_t           last_meal;
-    u_int64_t           start_time;
-    pthread_t           th;
-    pthread_mutex_t     fork_lock;
-    pthread_mutex_t     *next_fork_lock;
-    t_data              *data;
-}					t_philosopher;
-
-int   init_data(t_data *data, char **argv);
-int   init_philosophers(t_data *data);
-void  *philosopher(void *arg);
 int   ft_atoi(char *str);
-u_int64_t   get_time(void);
-void  philo_state(t_philosopher *philo, char *state);
-void  is_eating(t_philosopher *philo);
-int  init_threads(t_philosopher *philosophers, t_data *data);
-int ft_usleep(u_int64_t time);
-u_int16_t time_stamp(u_int16_t start_time);
-void  philo_eat(t_philosopher *philo);
-void  philo_sleep(t_philosopher *philo);
-void  philo_think(t_philosopher *philo);
-int  init_philosophers_mutexes(t_philosopher *philosophers, t_data *data);
-void  init_philosophers_data(t_philosopher *philosophers, t_data *data);
-int  create_philosopher_thread(t_philosopher *philosophers, t_data *data);
-void  destroy_philosophers_mutexes(t_philosopher *philosophers, t_data *data);
-void  *philo_rotine(void *arg);
-void *checks(void *arg);
-int check_eat_time(t_philosopher *philo);
-int check_die(t_philosopher *philo);
+size_t   get_time(void);
+int ft_usleep(size_t time);
+size_t time_stamp(size_t start_time);
+int   check_args(char **argv);
+int   init_forks(int *forks, pthread_mutex_t *forks_mutexes, int philo_nbr);
+int   init_threads(t_philosophers *philos, t_data *data);
+void   init_philosophers(t_data *data, t_philosophers *philos, int *forks, pthread_mutex_t *forks_mutexes);
+int   init_data(t_data *data, char **argv, t_philosophers *philos, int argc);
+void 		*check_status(void *arg);
+int   check_die(t_philosophers *philos, t_data *data);
+int   check_eat_time(t_philosophers *philos, t_data *data);
+void   print_messege(int id, char *messege, t_philosophers *philos);
+void   *philo_routine(void *arg);
+int   dead_status_check(t_philosophers *philo);
+void   eating(t_philosophers *philo);
+void   sleeping(t_philosophers *philo);
+void   thinking(t_philosophers *philo);
+void   destory_mutexes(t_data *data, pthread_mutex_t *forks_mutexes, char *str);

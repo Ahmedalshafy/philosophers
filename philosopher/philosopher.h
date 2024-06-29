@@ -9,12 +9,15 @@
 typedef struct s_data
 {
     int				philo_nbr;
+    int                dead_flag;
     u_int64_t				time_to_die;
     u_int64_t				time_to_eat;
     u_int64_t				time_to_sleep;
     pthread_mutex_t        print;
-    pthread_t           *check_die;
-    int				meal_nbr;
+    pthread_mutex_t        dead_status;
+    pthread_mutex_t        meal_count_lock;
+    pthread_t               checks;
+    int				        meal_nbr;
 }					t_data;
 
 typedef struct s_philosopher
@@ -22,13 +25,17 @@ typedef struct s_philosopher
     int				    id;
     int                 fork;
     int*                next_fork;
-    int                 eat_count;
+    int                 *dead;
+    int                 meal_count;
     u_int64_t           last_meal;
     u_int64_t           start_time;
     t_data              *data;
     pthread_t           th;
     pthread_mutex_t     fork_lock;
     pthread_mutex_t     *next_fork_lock;
+    pthread_mutex_t     *print;
+    pthread_mutex_t	 	*dead_status;
+    pthread_mutex_t     *meal_count_lock;
 }					t_philosopher;
 
 
